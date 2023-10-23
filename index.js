@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import "./db/server.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
