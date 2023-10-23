@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import "./db/server.js";
+import { errorHandler } from "./middlewares/errorHandler";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -27,6 +28,8 @@ User Route ("/user")
 "/:id/cart", get, delete, post
 "/:id/wishlist", get, delete, post
 */
+
+app.use(errorHandler);
 
 app.listen(PORT, (req, res) => {
   console.log(`Example app listening on http://localhost:${PORT}`);
