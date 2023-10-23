@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import "./db/server.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
-import userRouter from "./routes/userRouter.js.js";
+import userRouter from "./routes/userRouter.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
