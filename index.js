@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import "./db/server.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import userRouter from "./routes/userRouter.js.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -28,6 +29,8 @@ User Route ("/user")
 "/:id/cart", get, delete, post
 "/:id/wishlist", get, delete, post
 */
+
+app.use("/user", userRouter);
 
 app.use(errorHandler);
 
