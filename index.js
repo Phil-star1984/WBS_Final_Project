@@ -3,6 +3,7 @@ import cors from "cors";
 import "./db/server.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import userRouter from "./routes/userRouter.js";
+import authRouter from "./routes/authRouter.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -31,6 +32,7 @@ User Route ("/user")
 */
 
 app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 app.use(errorHandler);
 
