@@ -32,23 +32,18 @@ export const getUserById = async (req, res, next) => {
 export const addNewUser = async (req, res, next) => {
 // Firstname
 // Lastname
-// Birthdate
 // E-Mail Adress(Username)
-// Creation date
-// [Wishlist]
-// [Shopping Cart]
+// password
+
 
     try {
-        const {firstname, lastname, birthdate, email, creationDate, wishlist, shoppingCart} = req.body;
+        const {firstname, lastname, email, password} = req.body;
         
         const newUser = await User.create({
             firstname, 
             lastname, 
-            birthdate, 
             email, 
-            creationDate, 
-            wishlist, 
-            shoppingCart,
+            password,
         })
         res.status(201).json(newUser);
 
@@ -57,24 +52,24 @@ export const addNewUser = async (req, res, next) => {
     }
 }
 
-export const updateUser = async (req, res, next) => {
-    const {id} = req.params;
-    const {firstname, lastname, birthdate, email, creationDate, wishlist, shoppingCart} = req.body;
+// export const updateUser = async (req, res, next) => {
+//     const {id} = req.params;
+//     const {firstname, lastname, birthdate, email, creationDate, wishlist, shoppingCart} = req.body;
 
-    try {
-        const updatedUser = await User.findByIdAndUpdate(
-            id, 
-            {firstname, lastname, birthdate, email, creationDate, wishlist, shoppingCart},
-            {new: true}
-        );
-        if (!updatedUser) {
-            throw {statusCode: 404, message: 'user not found'};
-        }
-        res.json(updateUser);
-    } catch (error) {
-        next (error);
-    }
-};
+//     try {
+//         const updatedUser = await User.findByIdAndUpdate(
+//             id, 
+//             {firstname, lastname, birthdate, email, creationDate, wishlist, shoppingCart},
+//             {new: true}
+//         );
+//         if (!updatedUser) {
+//             throw {statusCode: 404, message: 'user not found'};
+//         }
+//         res.json(updateUser);
+//     } catch (error) {
+//         next (error);
+//     }
+// };
 
 
 
