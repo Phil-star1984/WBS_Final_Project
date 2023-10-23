@@ -1,5 +1,6 @@
-import User from '../models/User.js';
+import User from "../models/User.js";
 
+<<<<<<< HEAD
 // export const getAllUsers = async(req,res,next) => {
 //     try {
 //         const users = await User.find();
@@ -15,42 +16,37 @@ import User from '../models/User.js';
 // };
 
 //getUserById
+=======
+>>>>>>> 232e1dd8ce0457a9cc9da17b70364932f36739d3
 export const getUserById = async (req, res, next) => {
-    const {id} = req.params;
+  const { id } = req.params;
 
-    try {
-        const user = await User.findById(id);
-        if (!user) {
-            throw {statusCode: 404, message: 'user not found'};
-        } 
-        res.send(user);
-    } catch (error) {
-        next(error);
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      throw { statusCode: 404, message: "user not found" };
     }
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const addNewUser = async (req, res, next) => {
-// Firstname
-// Lastname
-// E-Mail Adress(Username)
-// password
+  try {
+    const { firstName, lastName, email, password } = req.body;
 
-
-    try {
-        const {firstname, lastname, email, password} = req.body;
-        
-        const newUser = await User.create({
-            firstname, 
-            lastname, 
-            email, 
-            password,
-        })
-        res.status(201).json(newUser);
-
-    } catch (error) {
-        next(error);
-    }
-}
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+    res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // export const updateUser = async (req, res, next) => {
 //     const {id} = req.params;
@@ -58,7 +54,7 @@ export const addNewUser = async (req, res, next) => {
 
 //     try {
 //         const updatedUser = await User.findByIdAndUpdate(
-//             id, 
+//             id,
 //             {firstname, lastname, birthdate, email, creationDate, wishlist, shoppingCart},
 //             {new: true}
 //         );
@@ -71,19 +67,17 @@ export const addNewUser = async (req, res, next) => {
 //     }
 // };
 
+export const deleteUser = async (req, res, next) => {
+  const { id } = req.params;
 
+  try {
+    const deletedUser = await User.findByIdAndDelete(id);
 
-export const deleteUser = async(req, res, next) => {
-    const {id} = req.params;
-
-    try {
-        const deletedUser = await User.findByIdAndDelete(id); 
-
-        if (!deletedUser) {
-            throw {statusCode: 404, message: 'user not found'}
-        }
-        res.status(200).json({message: 'user was deleted'});
-    } catch (error) {
-        next(error);
+    if (!deletedUser) {
+      throw { statusCode: 404, message: "user not found" };
     }
+    res.status(200).json({ message: "user was deleted" });
+  } catch (error) {
+    next(error);
+  }
 };
