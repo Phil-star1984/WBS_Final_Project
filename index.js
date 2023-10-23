@@ -12,7 +12,6 @@ app.use("/", (req, res) => {
 });
 
 /* 
-
 ALL ROUTES
 
 Home Route ("/")
@@ -26,7 +25,6 @@ User Route ("/user")
 "/:id", get, delete
 "/:id/cart", get, delete, post
 "/:id/wishlist", get, delete, post
-
 */
 
 app.listen(PORT, (req, res) => {
