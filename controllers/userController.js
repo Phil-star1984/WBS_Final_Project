@@ -1,23 +1,5 @@
 import User from "../models/User.js";
 
-<<<<<<< HEAD
-// export const getAllUsers = async(req,res,next) => {
-//     try {
-//         const users = await User.find();
-//         if (!users.length) {
-//             //option1// throw new Error();
-           
-//             throw{statusCode: 404, message: 'user not found'};
-//         }
-//         res.json(users);
-//     } catch (error) {
-//         next(error);
-//     }
-// };
-
-//getUserById
-=======
->>>>>>> 232e1dd8ce0457a9cc9da17b70364932f36739d3
 export const getUserById = async (req, res, next) => {
   const { id } = req.params;
 
