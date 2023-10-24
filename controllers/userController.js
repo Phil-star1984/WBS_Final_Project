@@ -1,4 +1,8 @@
 import User from "../models/User.js";
+import Cart from "../models/Cart.js";
+import Wishlist from "../models/Wishlist.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ErrorResponse from "../utils/ErrorResponse.js";
 
 export const getUserById = async (req, res, next) => {
   const { id } = req.params;
@@ -9,22 +13,6 @@ export const getUserById = async (req, res, next) => {
       throw { statusCode: 404, message: "user not found" };
     }
     res.send(user);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const addNewUser = async (req, res, next) => {
-  try {
-    const { firstName, lastName, email, password } = req.body;
-
-    const newUser = await User.create({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
-    res.status(201).json(newUser);
   } catch (error) {
     next(error);
   }
@@ -49,6 +37,7 @@ export const addNewUser = async (req, res, next) => {
 //     }
 // };
 
+// USER
 export const deleteUser = async (req, res, next) => {
   const { id } = req.params;
 
@@ -58,8 +47,97 @@ export const deleteUser = async (req, res, next) => {
     if (!deletedUser) {
       throw { statusCode: 404, message: "user not found" };
     }
-    res.status(200).json({ message: "user was deleted" });
+    res.status(200).json({ message: "user was deleted", deletedUser });
   } catch (error) {
     next(error);
   }
 };
+
+// CART
+export const getCart = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const cart = await Cart.findOne({ user: userId });
+  if (!cart) throw new ErrorResponse("Cart does not exist", 404);
+
+  res.status(200).json(cart);
+});
+
+export const addGameToCart = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { gameId } = req.body;
+
+  const foundUser = await User.findById({ _id: userId });
+  if (!foundUser) throw new ErrorResponse("No such user exists", 404);
+
+  const updatedCart = await Cart.findOneAndUpdate(
+    { user: userId },
+    { $push: { games: { gameId } } },
+    { new: true, upsert: true }
+  );
+
+  if (!updatedCart) throw new ErrorResponse("Could not add game to cart", 404);
+
+  res.status(200).json(updatedCart);
+});
+
+export const deleteGameInCart = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { gameId } = req.body;
+
+  const updatedCart = await Cart.findOneAndUpdate(
+    { user: userId },
+    { $pull: { games: { gameId } } },
+    { new: true }
+  );
+
+  if (!updatedCart)
+    throw new ErrorResponse("Could not delete game or find cart", 404);
+
+  res.status(200).json(updatedCart);
+});
+
+// WISHLIST
+export const getWishlist = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const wishlist = await Wishlist.findOne({ user: userId });
+  if (!wishlist) throw new ErrorResponse("Wishlist does not exist", 404);
+
+  res.status(200).json(wishlist);
+});
+
+export const addGameToWishlist = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { gameId } = req.body;
+
+  const foundUser = await User.findById({ _id: userId });
+  if (!foundUser) throw new ErrorResponse("No such user exists", 404);
+
+  const updatedWishlist = await Wishlist.findOneAndUpdate(
+    { user: userId },
+    { $push: { games: { gameId } } },
+    { new: true, upsert: true }
+  );
+
+  if (!updatedWishlist)
+    throw new ErrorResponse("Could not add game to wishlist", 404);
+
+  res.status(200).json(updatedWishlist);
+});
+
+export const deleteGameInWishlist = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { gameId } = req.body;
+
+  const updatedWishlist = await Wishlist.findOneAndUpdate(
+    { user: userId },
+    { $pull: { games: { gameId } } },
+    { new: true }
+  );
+
+  if (!updatedWishlist)
+    throw new ErrorResponse("Could not delete game or find wishlist", 404);
+
+  res.status(200).json(updatedWishlist);
+});
