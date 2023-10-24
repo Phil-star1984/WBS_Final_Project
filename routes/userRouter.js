@@ -3,7 +3,10 @@ import * as userController from "../controllers/userController.js";
 
 const userRouter = express.Router();
 
-userRouter.route("/").post(userController.addNewUser);
+userRouter
+  .route("/")
+  .post(userController
+  .addNewUser);
 
 userRouter
   .route("/:id")
