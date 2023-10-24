@@ -5,7 +5,7 @@ const userRouter = express.Router();
 
 userRouter
   .route("/")
-  .post(userController);
+  // .post(userController);
 
 userRouter
   .route("/:id")
