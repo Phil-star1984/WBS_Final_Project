@@ -40,6 +40,8 @@ export const signIn = asyncHandler(async (req, res, next) => {
 });
 
 export const getUser = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.uid);
+  console.log(req.uid);
+  const user = await User.findById(req.uid, { password: 0 });
+
   res.json(user);
 });
