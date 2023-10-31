@@ -67,6 +67,8 @@ export const addGameToCart = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const { gameId } = req.body;
 
+  console.log(gameId);
+
   const foundUser = await User.findById({ _id: userId });
   if (!foundUser) throw new ErrorResponse("No such user exists", 404);
 
@@ -83,7 +85,10 @@ export const addGameToCart = asyncHandler(async (req, res) => {
 
 export const deleteGameInCart = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-  const { gameId } = req.body;
+  const { games } = req.body;
+
+  const foundUser = await User.findById({ _id: userId });
+  if (!foundUser) throw new ErrorResponse("No such user exists", 404);
 
   const updatedCart = await Cart.findOneAndUpdate(
     { user: userId },
@@ -93,6 +98,24 @@ export const deleteGameInCart = asyncHandler(async (req, res) => {
 
   if (!updatedCart)
     throw new ErrorResponse("Could not delete game or find cart", 404);
+
+  res.status(200).json(updatedCart);
+});
+
+export const addManyGamesToCart = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { games } = req.body;
+
+  const foundUser = await User.findById({ _id: userId });
+  if (!foundUser) throw new ErrorResponse("No such user exists", 404);
+
+  const updatedCart = await Cart.findOneAndUpdate(
+    { user: userId },
+    { $push: { games: { $each: games } } },
+    { new: true, upsert: true }
+  );
+
+  if (!updatedCart) throw new ErrorResponse("Could not add game to cart", 404);
 
   res.status(200).json(updatedCart);
 });
