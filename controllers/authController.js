@@ -22,7 +22,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
   });
 
   const token = jwt.sign({ uid: newUser._id }, process.env.JWT_SECRET);
-  res.status(201).send({ token });
+  res.status(201).send({ status: "success" });
 });
 
 //SingIn
@@ -36,7 +36,8 @@ export const signIn = asyncHandler(async (req, res, next) => {
   if (!match) throw new ErrorResponse("Wrong Password", 401);
 
   const token = jwt.sign({ uid: existingUser._id }, process.env.JWT_SECRET);
-  res.status(200).send({ token });
+  res.cookie("token", token, { httpOnly: true, maxAge: 1800000 });
+  res.status(200).send({ status: "success" });
 });
 
 export const getUser = asyncHandler(async (req, res, next) => {
@@ -44,4 +45,9 @@ export const getUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.uid, { password: 0 });
 
   res.json(user);
+});
+
+export const logout = asyncHandler(async (req, res, next) => {
+  res.clearCookie("token");
+  res.status(200).send({ status: "success" });
 });
