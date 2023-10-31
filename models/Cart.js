@@ -12,6 +12,7 @@ const cartSchema = new mongoose.Schema({
       gameId: {
         type: String,
         required: true,
+        unique: true,
       },
       dateAdded: {
         type: Date,

@@ -12,7 +12,8 @@ userRouter
   .route("/:userId/cart")
   .get(userController.getCart)
   .post(userController.addGameToCart)
-  .delete(userController.deleteGameInCart);
+  .delete(userController.deleteGameInCart)
+  .put(userController.addManyGamesToCart);
 
 userRouter
   .route("/:userId/wishlist")
