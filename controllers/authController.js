@@ -36,7 +36,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
     if (!match) throw new ErrorResponse('Wrong Password', 401);
   
     const token = jwt.sign({ uid: existingUser._id }, process.env.JWT_SECRET);
-    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 1800000 });
+    res.cookie("token", token, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 1800000 });
     res.status(200).send({ status: 'success' });
   });
 
