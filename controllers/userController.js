@@ -91,7 +91,7 @@ export const addGameToCart = asyncHandler(async (req, res) => {
 
     res.status(200).json(updatedCart);
   } else {
-    console.log("Game already in cart.");
+    console.log("Game already in cart");
     res.status(200).json(existingGame);
   }
 });
@@ -139,7 +139,7 @@ export const addManyGamesToCart = asyncHandler(async (req, res) => {
 
     res.status(200).json(updatedCart);
   } else {
-    console.log("Games already in cart:", existingGames);
+    console.log("Games already in cart");
     res.status(200).json(existingGames);
   }
 });
