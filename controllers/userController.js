@@ -57,8 +57,10 @@ export const deleteUser = async (req, res, next) => {
 export const getCart = asyncHandler(async (req, res) => {
   const { userId } = req.params;
 
-  const cart = await Cart.findOne({ user: userId });
-  if (!cart) throw new ErrorResponse("Cart does not exist", 404);
+  const foundUser = await User.findById({ _id: userId });
+  if (!foundUser) throw new ErrorResponse("No such user exists", 404);
+
+  const cart = (await Cart.findOne({ user: userId })) || [];
 
   res.status(200).json(cart);
 });
@@ -72,15 +74,26 @@ export const addGameToCart = asyncHandler(async (req, res) => {
   const foundUser = await User.findById({ _id: userId });
   if (!foundUser) throw new ErrorResponse("No such user exists", 404);
 
-  const updatedCart = await Cart.findOneAndUpdate(
-    { user: userId },
-    { $push: { games: { gameId } } },
-    { new: true, upsert: true }
-  );
+  const existingGame = await Cart.findOne({
+    user: userId,
+    "games.gameId": gameId,
+  });
 
-  if (!updatedCart) throw new ErrorResponse("Could not add game to cart", 404);
+  if (!existingGame) {
+    const updatedCart = await Cart.findOneAndUpdate(
+      { user: userId },
+      { $push: { games: { gameId } } },
+      { new: true, upsert: true }
+    );
 
-  res.status(200).json(updatedCart);
+    if (!updatedCart)
+      throw new ErrorResponse("Could not add game to cart", 404);
+
+    res.status(200).json(updatedCart);
+  } else {
+    console.log("Game already in cart");
+    res.status(200).json(existingGame);
+  }
 });
 
 export const deleteGameInCart = asyncHandler(async (req, res) => {
@@ -109,15 +122,26 @@ export const addManyGamesToCart = asyncHandler(async (req, res) => {
   const foundUser = await User.findById({ _id: userId });
   if (!foundUser) throw new ErrorResponse("No such user exists", 404);
 
-  const updatedCart = await Cart.findOneAndUpdate(
-    { user: userId },
-    { $push: { games: { $each: games } } },
-    { new: true, upsert: true }
-  );
+  const existingGames = await Cart.findOne({
+    user: userId,
+    "games.gameId": { $in: games.map((game) => game.gameId) },
+  });
 
-  if (!updatedCart) throw new ErrorResponse("Could not add game to cart", 404);
+  if (!existingGames) {
+    const updatedCart = await Cart.findOneAndUpdate(
+      { user: userId },
+      { $push: { games: { $each: games } } },
+      { new: true, upsert: true }
+    );
 
-  res.status(200).json(updatedCart);
+    if (!updatedCart)
+      throw new ErrorResponse("Could not add game to cart", 404);
+
+    res.status(200).json(updatedCart);
+  } else {
+    console.log("Games already in cart");
+    res.status(200).json(existingGames);
+  }
 });
 
 // WISHLIST

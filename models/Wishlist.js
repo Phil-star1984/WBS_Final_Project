@@ -10,7 +10,7 @@ const wishlistSchema = new mongoose.Schema({
   games: [
     {
       gameId: {
-        type: String,
+        type: Number,
         required: true,
         unique: true,
       },
