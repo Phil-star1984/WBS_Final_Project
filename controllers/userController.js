@@ -69,8 +69,6 @@ export const addGameToCart = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const { gameId } = req.body;
 
-  console.log(gameId);
-
   const foundUser = await User.findById({ _id: userId });
   if (!foundUser) throw new ErrorResponse("No such user exists", 404);
 
@@ -98,7 +96,11 @@ export const addGameToCart = asyncHandler(async (req, res) => {
 
 export const deleteGameInCart = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-  const { games } = req.body;
+  const { gameId } = req.body;
+  console.log(gameId);
+
+  if (!userId || !gameId)
+    throw new ErrorResponse("UserId or GameId not correct", 400);
 
   const foundUser = await User.findById({ _id: userId });
   if (!foundUser) throw new ErrorResponse("No such user exists", 404);
