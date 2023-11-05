@@ -27,18 +27,23 @@ export const signUp = asyncHandler(async (req, res, next) => {
 
 //SingIn
 export const signIn = asyncHandler(async (req, res, next) => {
-    const { email, password } = req.body;
-  
-    const existingUser = await User.findOne({ email }).select('+password');
-    if (!existingUser) throw new ErrorResponse('User does not exist', 404);
-  
-    const match = await bcrypt.compare(password, existingUser.password);
-    if (!match) throw new ErrorResponse('Wrong Password', 401);
-  
-    const token = jwt.sign({ uid: existingUser._id }, process.env.JWT_SECRET);
-    res.cookie("token", token, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 1800000 });
-    res.status(200).send({ status: 'success' });
+  const { email, password } = req.body;
+
+  const existingUser = await User.findOne({ email }).select("+password");
+  if (!existingUser) throw new ErrorResponse("User does not exist", 404);
+
+  const match = await bcrypt.compare(password, existingUser.password);
+  if (!match) throw new ErrorResponse("Wrong Password", 401);
+
+  const token = jwt.sign({ uid: existingUser._id }, process.env.JWT_SECRET);
+  res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+    maxAge: 1800000,
   });
+  res.status(200).send();
+});
 
 export const getUser = asyncHandler(async (req, res, next) => {
   console.log(req.uid);
@@ -48,11 +53,10 @@ export const getUser = asyncHandler(async (req, res, next) => {
 });
 
 export const logout = asyncHandler(async (req, res, next) => {
-    res.clearCookie('token', {
-      httpOnly: true,
-      sameSite: 'None',
-      secure: true,
-    });
-    res.status(200).send({ status: 'success' });
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
   });
-  
+  res.status(200).send({ status: "success" });
+});
