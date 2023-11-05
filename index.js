@@ -6,6 +6,7 @@ import userRouter from "./routes/userRouter.js";
 import authRouter from "./routes/authRouter.js";
 import postRouter from "./routes/postRouter.js";
 import cookieParser from "cookie-parser";
+import chatRouter from "./routes/chatRouter.js";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -37,6 +38,7 @@ User Route ("/user")
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
+app.use("/completions", chatRouter);
 
 app.use(errorHandler);
 
