@@ -141,8 +141,31 @@ export const addManyGamesToCart = asyncHandler(async (req, res) => {
 
     res.status(200).json(updatedCart);
   } else {
-    console.log("Games already in cart");
-    res.status(200).json(existingGames);
+    // Filter out games that are already in the cart
+    const newGames = games.filter(
+      (game) =>
+        !existingGames.games.some(
+          (existingGame) => existingGame.gameId === game.gameId
+        )
+    );
+
+    if (newGames.length > 0) {
+      // Add only the new games to the cart
+      const updatedCart = await Cart.findOneAndUpdate(
+        { user: userId },
+        { $push: { games: { $each: newGames } } },
+        { new: true }
+      );
+
+      if (!updatedCart)
+        throw new ErrorResponse("Could not add game to cart", 404);
+
+      res.status(200).json(updatedCart);
+    } else {
+      // If all games are already in the cart, respond with the existing cart
+      console.log("All games already in cart");
+      res.status(200).json(existingGames);
+    }
   }
 });
 
